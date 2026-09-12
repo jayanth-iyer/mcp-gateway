@@ -1,0 +1,17 @@
+# Downstream per-app MCP servers (static registry).
+# The gateway does not load this file yet; it defines the v1 contract.
+
+servers:
+  - id: ado
+    name: Azure DevOps MCP
+    url: http://localhost:8101/mcp
+  - id: oracle
+    name: Oracle MCP
+    url: http://localhost:8102/mcp
+
+# Internal LLM services that may call the gateway, and which app MCPs they may use.
+clients:
+  - id: coding_assistant
+    allowed_mcp_ids: [ado]
+  - id: finance_agent
+    allowed_mcp_ids: [oracle]
