@@ -8,7 +8,7 @@ Internal LLM  →  MCP Gateway (one MCP)  →  ADO MCP, Oracle MCP, … (~50 app
 
 v1 also applies identity, redaction, authorization, and audit on that hop. Downstream MCP URLs and which caller may use which MCP live in static config (`config/mcp-servers.yaml`). IDE clients are out of scope.
 
-This branch is **initial scaffolding only**. Registry load, routing, and governance are stubbed.
+This branch implements **feature 1: authenticated tool discovery**. `tools/call`, redaction, and audit are still stubbed.
 
 See [docs/mcp-gateway.md](docs/mcp-gateway.md) for locked decisions and BDD.
 
@@ -36,8 +36,9 @@ src/mcp_gateway/
   auth/                    # Token → internal LLM caller (stub)
   governance/              # Redaction + authorization (stubs)
   audit/                   # Append-only audit store (stub)
-  registry/                # Load static YAML catalog (stub)
-  proxy/                   # MCP client to app MCPs (stub)
+  registry/                # Static YAML catalog
+  proxy/                   # MCP client to app MCPs
+  discovery.py             # tools/list aggregation + namespacing
 tests/
   features/                # Gherkin aligned with the architecture doc
 ```
@@ -58,6 +59,7 @@ Service listens on `http://localhost:8000`.
 curl -s http://localhost:8000/health
 curl -s -X POST http://localhost:8000/ \
   -H 'content-type: application/json' \
+  -H 'authorization: Bearer coding-assistant-dev-token' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 ```
 

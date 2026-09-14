@@ -7,8 +7,12 @@ def test_health(client: TestClient) -> None:
     assert response.json() == {"status": "ok"}
 
 
-def test_jsonrpc_stub_returns_not_implemented(client: TestClient) -> None:
-    response = client.post("/", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
+def test_unknown_jsonrpc_method_returns_not_implemented(client: TestClient) -> None:
+    response = client.post(
+        "/",
+        json={"jsonrpc": "2.0", "id": 1, "method": "tools/call"},
+        headers={"Authorization": "Bearer coding-assistant-dev-token"},
+    )
     assert response.status_code == 200
     body = response.json()
     assert body["jsonrpc"] == "2.0"

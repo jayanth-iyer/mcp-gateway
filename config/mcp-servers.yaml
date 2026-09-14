@@ -1,17 +1,28 @@
 # Downstream per-app MCP servers (static registry).
-# The gateway does not load this file yet; it defines the v1 contract.
 
 servers:
   - id: ado
     name: Azure DevOps MCP
     url: http://localhost:8101/mcp
+    high_risk_tools:
+      - delete_project
   - id: oracle
     name: Oracle MCP
     url: http://localhost:8102/mcp
+    high_risk_tools: []
 
 # Internal LLM services that may call the gateway, and which app MCPs they may use.
+# Tokens are static v1 credentials for those callers (not end-user passwords).
 clients:
   - id: coding_assistant
+    token: coding-assistant-dev-token
+    roles: [developer]
     allowed_mcp_ids: [ado]
   - id: finance_agent
+    token: finance-agent-dev-token
+    roles: [developer]
     allowed_mcp_ids: [oracle]
+  - id: platform_admin
+    token: platform-admin-dev-token
+    roles: [Admin]
+    allowed_mcp_ids: [ado, oracle]
